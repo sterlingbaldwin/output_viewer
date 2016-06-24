@@ -1,0 +1,1 @@
+recursive-include output_viewer/static *.css *.js
