@@ -51,15 +51,21 @@ def build_viewer(index_path="index.json", diag_name="AIMS Output Viewer"):
     doc.append(toolbar)
     container = doc.append_tag("div", class_="container")
     row = container.append_tag("div", class_="row")
+    col = row.append_tag("div", class_="col-sm-5 col-sm-offset-1")
     table = Table(class_="table")
-    row.append(table)
-
+    col.append(table)
+    col = row.append_tag('div', class_="col-sm-5")
+    grid = col.append_tag('div', class_="img_links")
     table.append_header().append_cell("Output Sets")
-
+    icons = []
     for page, page_name in pages:
         page.build(page_name, toolbar)
-        l = Link(href=page_name + "/index.html")
+        page_path = os.path.join(page_name, "index.html")
+        l = Link(href=page_path)
         l.append(page.name)
+        if page.icon:
+            cell = grid.append_tag("div", class_="img_cell")
+            cell.append_tag("a", href=page_path).append_tag('img', src=page.icon)
         table.append_row().append_cell(l)
 
     with open(os.path.join(path, "index.html"), "w") as f:
