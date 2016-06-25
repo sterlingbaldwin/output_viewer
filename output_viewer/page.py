@@ -1,4 +1,4 @@
-from .htmlbuilder import Document, Table, TableCell, Link
+from .htmlbuilder import Document, Table, TableCell, Link, Span
 import os
 from .examine import is_img, is_data
 from .utils import slugify, nuke_and_pave
@@ -18,7 +18,7 @@ class Column(object):
         doc.append(toolbar)
         container = doc.append_tag("div", class_="container")
         row = container.append_tag("div", class_="row")
-        title = row.append_tag("h1")
+        title = row.append_tag("h1", class_="img_title")
         title.append(self.title)
 
         row = container.append_tag('div', class_="row")
@@ -50,7 +50,11 @@ class Column(object):
         return os.path.join(self.row.dirname, slugify(self.title) + ".html")
 
     def getLink(self, level):
-        l = Link(href=self.getURL(), data={"preview": os.path.join(*([".."] * level + [self.path]))})
+        path = os.path.join(os.path.dirname(os.path.dirname(self.row.group.dirpath)), self.path)
+        if os.path.exists(path):
+            l = Link(href=self.getURL(), data={"preview": os.path.join(*([".."] * level + [self.path]))})
+        else:
+            l = Span()
         l.append(self.title)
         return l
 
