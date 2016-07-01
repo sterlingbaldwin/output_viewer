@@ -108,7 +108,7 @@ class OutputGroup(object):
 
 
 class OutputRow(object):
-    def __init__(self, title, columns, meta=None):
+    def __init__(self, title, columns):
         self.title = title
         self.columns = columns
 
@@ -168,5 +168,11 @@ class OutputMenu(object):
         if isinstance(self.items, dict):
             obj["items"] = [{"title": t, "url": self.items[t]} for t in self.items]
         elif isinstance(self.items, list):
-            obj["items"] = self.items
+            items = []
+            for i in self.items:
+                if isinstance(i, OutputPage):
+                    items.append({"title": i.title, "url": "/".join([i.short_name, "index.html"])})
+                else:
+                    items.append(i)
+            obj["items"] = items
         return obj

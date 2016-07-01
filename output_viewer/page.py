@@ -15,7 +15,8 @@ class Column(object):
 
     def build(self, toolbar):
         doc = Document(title=self.title, level=3)
-        doc.append(toolbar)
+        if toolbar is not None:
+            doc.append(toolbar)
         container = doc.append_tag("div", class_="container")
         row = container.append_tag("div", class_="row")
         title = row.append_tag("h1", class_="img_title")
@@ -42,8 +43,10 @@ class Column(object):
 
         container.append_tag("div", class_="row").append(table)
 
-        with open(self.getURL(), "w") as out:
-            toolbar.setLevel(3)
+        html_path = os.path.join(self.row.group.dirpath, self.row.title, slugify(self.title) + ".html")
+        with open(html_path, "w") as out:
+            if toolbar is not None:
+                toolbar.setLevel(3)
             out.write(doc.build())
 
     def getURL(self):
@@ -71,7 +74,7 @@ class Row(object):
                 # We don't actually need to keep track of the "string" columns
                 # They'll just be plain text
                 continue
-        self.dirname = os.path.join(self.group.dirpath, self.title)
+        self.dirname = os.path.join(self.group.dirname, self.title)
 
     def getLink(self, col_ind, level):
         if col_ind in self.cols:
@@ -80,7 +83,7 @@ class Row(object):
             return None
 
     def build(self, toolbar):
-        nuke_and_pave(self.dirname)
+        nuke_and_pave(os.path.join(self.group.dirpath, self.title))
         for _, col in self.cols.iteritems():
             col.build(toolbar)
 
@@ -137,12 +140,12 @@ class Page(object):
         self.rows = spec.get("rows", [])
         self.long_desc = spec.get("long_description", "")
 
-    def build(self, dirname, toolbar):
+    def build(self, dirname, toolbar=None):
         nuke_and_pave(os.path.join(self.root_path, dirname))
 
         doc = Document(title=self.name, level=1)
-        # Calling classes should provide a toolbar
-        doc.append(toolbar)
+        if toolbar is not None:
+            doc.append(toolbar)
         # Build the header, title, subtitle, etc.
         container = doc.append_tag("div", class_="container")
         row = container.append_tag("div", class_="row")
@@ -170,7 +173,7 @@ class Page(object):
             group_title = group["title"]
 
             # Pad the columns so they're appropriately spaced
-            column_widths = [1 for i in range(len(column_names))]
+            column_widths = [1 for i in range(len(column_names) + 1)]
             difflen = self.number_of_cols - len(column_names)
             col_ind = len(column_widths) - 1
             while difflen > 0:
@@ -196,10 +199,13 @@ class Page(object):
                     l = group_obj.getLink(row_ind, col_ind, 1)
                     if l is None:
                         l = col
-                    tr.append_cell(l)
-
+                    try:
+                        tr.append_cell(l, colspan=column_widths[col_ind])
+                    except IndexError:
+                        print column_widths, col_ind
             group_obj.build(toolbar)
 
         with open(os.path.join(self.root_path, dirname, "index.html"), "w") as outfile:
-            toolbar.setLevel(1)
+            if toolbar is not None:
+                toolbar.setLevel(1)
             outfile.write(doc.build())

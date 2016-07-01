@@ -8,7 +8,7 @@ import datetime
 import os
 
 
-def build_viewer(index_path="index.json", diag_name="AIMS Output Viewer"):
+def build_viewer(index_path="index.json", diag_name="Output Viewer"):
     try:
         with open(index_path) as index_file:
             spec = json.load(index_file)
