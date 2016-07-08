@@ -4,7 +4,7 @@ import os
 
 setup(
     name="output_viewer",
-    version="0.0.2",
+    version="0.0.3",
     description="Framework for building web pages to examine output.",
     author="Sam Fries",
     author_email="fries2@llnl.gov",
@@ -17,5 +17,5 @@ setup(
     install_requires=[],
     packages=find_packages(),
     include_package_data=True,
-    scripts=["scripts/view_output", "scripts/view_output.py"]
+    scripts=["scripts/view_output", "scripts/view_output.py", "scripts/upload_output", "scripts/upload_output.py"]
 )
