@@ -16,7 +16,7 @@ class ViewerConfig(object):
         self.parser = ConfigParser.SafeConfigParser()
         for f in glob.iglob(os.path.join(self.path, "*.cfg")):
             with open(f) as fp:
-                self.parser.readfp(f)
+                self.parser.readfp(fp)
     
     def get(self, section, key):
         if self.parser.has_section(section):
@@ -27,7 +27,7 @@ class ViewerConfig(object):
     def set(self, section, key, value):
         if not self.parser.has_section(section):
             self.parser.add_section(section)
-        self.parser.set(section, key, value)
+        self.parser.set(section, key, str(value))
 
     def extract_section(self, section, cfg=None):
         if cfg is None:

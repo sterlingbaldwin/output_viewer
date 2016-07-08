@@ -110,14 +110,6 @@ class Group(object):
 class Page(object):
     def __init__(self, spec, root_path="./"):
         self.name = spec.get("title", "")
-        if "menu" in spec:
-            self.menu = {}
-            if isinstance(spec["menu"], dict):
-                self.menu = spec["menu"]
-            else:
-                self.menu["title"] = spec["menu"]
-        else:
-            self.menu = None
         self.short_name = spec.get("short_name", None)
 
         columns = spec.get("columns", [])

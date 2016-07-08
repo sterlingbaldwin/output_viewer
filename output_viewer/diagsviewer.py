@@ -1,4 +1,6 @@
 import requests
+import time
+import os
 import resource
 import hmac
 import hashlib
@@ -15,8 +17,8 @@ class DiagnosticsViewerClient(object):
         self.key = user_key
 
     def login(self, username, password):
-        credentials = requests.get(server + "/ea_services/credentials/%s/?password=%s" % (args.user, password))
-        if cred.status_code != 200:
+        credentials = requests.get(self.server + "/ea_services/credentials/%s/?password=%s" % (username, password))
+        if credentials.status_code != 200:
             raise ValueError("Username/Password invalid.")
 
         creds = credentials.json()

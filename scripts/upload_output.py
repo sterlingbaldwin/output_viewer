@@ -45,7 +45,7 @@ def upload_pkg(directory, client):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload an output set to an instance of DiagnosticsViewer.")
-    parser.add_argument("output", help="Path to directory containing an index.json file and the output it refers to."))
+    parser.add_argument("output", help="Path to directory containing an index.json file and the output it refers to.")
     parser.add_argument("--user", help="Username to log into server with. If previously logged in to the targeted server, not needed. You will be prompted for your password.")
     parser.add_argument("--server", help="Server to send files to. Will use whatever server was used last, or https://acme-ea.ornl.gov (default)", default=None)
     args = parser.parse_args()
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     cfg.set("upload", "last_server", server)
 
-    client = DiagnosticsViewerClient()
+    client = DiagnosticsViewerClient(server)
 
     if args.user is not None:
         password = getpass.getpass("Password: ")
