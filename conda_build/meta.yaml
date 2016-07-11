@@ -1,0 +1,21 @@
+package:
+  name: output_viewer
+  version: 1.0.0
+
+source:
+  git_rev: 1.0.0
+  git_url: git://github.com/ESGF/output_viewer.git
+
+build:
+  string: beta
+ 
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - requests
+
+about:
+  home:  http://gitub.com/ESGF/output_viewer
