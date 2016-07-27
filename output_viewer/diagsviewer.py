@@ -49,6 +49,6 @@ class DiagnosticsViewerClient(object):
             for f in files_to_send:
                 files_to_send[f].close()
             time.sleep(.01)
-    
+
 
 

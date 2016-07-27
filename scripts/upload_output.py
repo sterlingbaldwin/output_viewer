@@ -31,13 +31,16 @@ def upload_pkg(directory, client):
             for row in group:
                 for col in row["columns"]:
                     if isinstance(col, dict) and "path" in col:
+                        if col["path"] == '':
+                            continue
                         if os.path.exists(os.path.join(directory, col['path'])):
                             files.append(col['path'])
                     else:
-                        if os.path.exists(os.path.join(directory, col)):
+                        if os.path.exists(os.path.join(directory, col)) and col != '':
                             files.append(col)
         if "icon" in spec and os.path.exists(os.path.join(directory, spec["icon"])):
             files.append(spec["icon"])
+    print files
     files = [os.path.join(file_root, filename) for filename in files]
     client.upload_files(version, files)
     os.chdir(cwd_cache)
@@ -51,14 +54,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     directory = args.output
+    directory = os.path.abspath(os.path.expanduser(directory))
 
     cfg = ViewerConfig()
-    
+
     if args.server is not None:
         server = args.server
     else:
         server = cfg.get("upload", "last_server")
-        
+
         if server is None:
             server = "https://acme-ea.ornl.gov"
 
@@ -68,7 +72,7 @@ if __name__ == "__main__":
 
     if args.user is not None:
         password = getpass.getpass("Password: ")
-    
+
         user_id, user_key = client.login(args.user, password)
 
         cfg.set(server, "id", user_id)
