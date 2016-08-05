@@ -40,7 +40,6 @@ def upload_pkg(directory, client):
                             files.append(col)
         if "icon" in spec and os.path.exists(os.path.join(directory, spec["icon"])):
             files.append(spec["icon"])
-    print files
     files = [os.path.join(file_root, filename) for filename in files]
     client.upload_files(version, files)
     os.chdir(cwd_cache)

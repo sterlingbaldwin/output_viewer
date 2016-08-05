@@ -18,7 +18,7 @@ class DiagnosticsViewerClient(object):
         self.cert = cert
 
     def login(self, username, password):
-        credentials = requests.get(self.server + "/ea_services/credentials/%s/?password=%s" % (username, password), verify=self.cert)
+        credentials = requests.post(self.server + "/ea_services/credentials/%s/" % username, data={"password": password}, verify=self.cert)
         if credentials.status_code != 200:
             raise ValueError("Username/Password invalid.")
 
@@ -46,7 +46,7 @@ class DiagnosticsViewerClient(object):
 
             resp = s.send(prepped, verify=self.cert)
             if resp.status_code != 200:
-                raise ValueError("Failed to upload files:\n%s" % "\n".join(files_to_send))
+                raise ValueError("Failed to upload files: %s" % resp.content)
             for f in files_to_send:
                 files_to_send[f].close()
             time.sleep(.01)
