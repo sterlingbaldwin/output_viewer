@@ -3,16 +3,17 @@ package:
   version: 1.0.1
 
 source:
-  git_rev: 1.0.1
+  git_rev: v1.0.1
   git_url: git://github.com/ESGF/output_viewer.git
 
 build:
   string: beta
- 
+
 requirements:
   build:
     - python
     - setuptools
+    - requests
   run:
     - python
     - requests
