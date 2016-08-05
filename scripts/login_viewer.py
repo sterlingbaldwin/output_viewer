@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import getpass
 import requests
 import argparse
 from output_viewer.config import ViewerConfig
@@ -11,9 +11,6 @@ if __name__ == "__main__":
     parser.add_argument("server", nargs="?", help="Server to login. Will use whatever server was used last if not provided.", default="https://diags-viewer.llnl.gov")
     parser.add_argument("--cert", help="Path to a certificate to use to authenticate request (useful if at LLNL or other firewalled institution). Will attempt to reuse last one if SSL errors occur. Set to False if you want to skip verification (not recommended).")
     args = parser.parse_args()
-
-    directory = args.output
-    directory = os.path.abspath(os.path.expanduser(directory))
 
     cfg = ViewerConfig()
 
