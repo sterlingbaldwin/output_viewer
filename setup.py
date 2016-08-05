@@ -4,7 +4,7 @@ import os
 
 setup(
     name="output_viewer",
-    version="1.0.0",
+    version="1.0.1",
     description="Framework for building web pages to examine output.",
     author="Sam Fries",
     author_email="fries2@llnl.gov",
