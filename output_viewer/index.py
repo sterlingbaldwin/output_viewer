@@ -16,6 +16,7 @@ class OutputIndex(object):
         obj = {"title": self.title, "specification": [page.toDict() for page in self.pages]}
         if self.version:
             obj["version"] = self.version
+        obj["output_viewer_version"] = "1"
         if self.menu:
             menus = []
             for m in self.menu:

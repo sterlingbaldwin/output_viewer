@@ -51,6 +51,7 @@ if __name__ == "__main__":
     parser.add_argument("output", help="Path to directory containing an index.json file and the output it refers to.")
     parser.add_argument("--user", help="Username to log into server with. If previously logged in to the targeted server, not needed. You will be prompted for your password.")
     parser.add_argument("--server", help="Server to send files to. Will use whatever server was used last, or https://acme-ea.ornl.gov (default)", default=None)
+    parser.add_argument("--cert", help="Path to a certificate to use to authenticate request (useful if at LLNL or other firewalled institution). Will attempt to reuse last one if SSL errors occur. Set to False if you want to skip verification (not recommended).")
     args = parser.parse_args()
 
     directory = args.output
@@ -64,11 +65,19 @@ if __name__ == "__main__":
         server = cfg.get("upload", "last_server")
 
         if server is None:
-            server = "https://acme-ea.ornl.gov"
+            server = "https://diags-viewer.llnl.gov"
 
     cfg.set("upload", "last_server", server)
 
-    client = DiagnosticsViewerClient(server)
+    if args.cert is not None:
+        cert = args.cert
+    else:
+        cert = cfg.get("certificate", "last_cert")
+
+    if cert is not None and cert.lower() == "false":
+        cert = False
+
+    client = DiagnosticsViewerClient(server, cert=cert)
 
     if args.user is not None:
         password = getpass.getpass("Password: ")
@@ -91,4 +100,3 @@ if __name__ == "__main__":
     cfg.save()
 
     upload_pkg(directory, client)
-

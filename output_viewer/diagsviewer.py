@@ -7,7 +7,7 @@ import hashlib
 
 
 class DiagnosticsViewerClient(object):
-    def __init__(self, server, user_id=None, user_key=None):
+    def __init__(self, server, user_id=None, user_key=None, cert=True):
         """
         Create an instance of DiagnosticsViewerClient.
         """
@@ -15,9 +15,10 @@ class DiagnosticsViewerClient(object):
         self.server = server
         self.id = user_id
         self.key = user_key
+        self.cert = cert
 
     def login(self, username, password):
-        credentials = requests.get(self.server + "/ea_services/credentials/%s/?password=%s" % (username, password))
+        credentials = requests.get(self.server + "/ea_services/credentials/%s/?password=%s" % (username, password), verify=self.cert)
         if credentials.status_code != 200:
             raise ValueError("Username/Password invalid.")
 
@@ -43,12 +44,9 @@ class DiagnosticsViewerClient(object):
             prepped.headers["X-Signature"] = h.hexdigest()
             prepped.headers["X-UserId"] = self.id
 
-            resp = s.send(prepped)
+            resp = s.send(prepped, verify=self.cert)
             if resp.status_code != 200:
                 raise ValueError("Failed to upload files:\n%s" % "\n".join(files_to_send))
             for f in files_to_send:
                 files_to_send[f].close()
             time.sleep(.01)
-
-
-
