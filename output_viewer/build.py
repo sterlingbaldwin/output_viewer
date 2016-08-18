@@ -75,7 +75,8 @@ def build_viewer(index_path="index.json", diag_name="Output Viewer", default_mas
     with open(os.path.join(path, "index.html"), "w") as f:
         toolbar.setLevel(0)
         f.write(doc.build())
-        os.chmod(os.path.join(path, "index.html"), default_mask)
+        if default_mask is not None:
+            os.chmod(os.path.join(path, "index.html"), default_mask)
 
     static_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "static")
     viewer_dir = os.path.join(path, "viewer")
