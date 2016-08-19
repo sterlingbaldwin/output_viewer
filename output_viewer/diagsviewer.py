@@ -1,4 +1,5 @@
 import requests
+from output_viewer.utils import slugify
 import time
 import os
 import resource
@@ -27,6 +28,36 @@ class DiagnosticsViewerClient(object):
         self.key = creds["key"]
 
         return self.id, self.key
+
+    def upload_package(self, directory):
+        index = os.path.join(directory, "index.json")
+        with open(index) as f:
+            index = json.load(f)
+        version = slugify(index["version"])
+
+        cwd_cache = os.getcwd()
+        os.chdir(os.path.dirname(directory))
+        file_root = os.path.basename(directory)
+        files = ["index.json"]
+
+        for spec in index["specification"]:
+            for group in spec["rows"]:
+                for row in group:
+                    for col in row["columns"]:
+                        if isinstance(col, dict) and "path" in col:
+                            if col["path"] == '':
+                                continue
+                            if os.path.exists(os.path.join(directory, col['path'])):
+                                files.append(col['path'])
+                        else:
+                            if os.path.exists(os.path.join(directory, col)) and col != '':
+                                files.append(col)
+            if "icon" in spec and os.path.exists(os.path.join(directory, spec["icon"])):
+                files.append(spec["icon"])
+
+        files = [os.path.join(file_root, filename) for filename in files]
+        self.upload_files(version, files)
+        os.chdir(cwd_cache)
 
     def upload_files(self, dataset, files):
         files_remaining = list(files)

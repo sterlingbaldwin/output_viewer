@@ -8,41 +8,10 @@ import hashlib
 import hmac
 import sys
 import os
-from output_viewer.utils import slugify
 from output_viewer.config import ViewerConfig
 from output_viewer.diagsviewer import DiagnosticsViewerClient
 import resource
 import time
-
-
-
-def upload_pkg(directory, client):
-    index = os.path.join(directory, "index.json")
-    with open(index) as f:
-        index = json.load(f)
-    version = slugify(index["version"])
-
-    cwd_cache = os.getcwd()
-    os.chdir(os.path.dirname(directory))
-    file_root = os.path.basename(directory)
-    files = ["index.json"]
-    for spec in index["specification"]:
-        for group in spec["rows"]:
-            for row in group:
-                for col in row["columns"]:
-                    if isinstance(col, dict) and "path" in col:
-                        if col["path"] == '':
-                            continue
-                        if os.path.exists(os.path.join(directory, col['path'])):
-                            files.append(col['path'])
-                    else:
-                        if os.path.exists(os.path.join(directory, col)) and col != '':
-                            files.append(col)
-        if "icon" in spec and os.path.exists(os.path.join(directory, spec["icon"])):
-            files.append(spec["icon"])
-    files = [os.path.join(file_root, filename) for filename in files]
-    client.upload_files(version, files)
-    os.chdir(cwd_cache)
 
 
 if __name__ == "__main__":
@@ -98,4 +67,4 @@ if __name__ == "__main__":
 
     cfg.save()
 
-    upload_pkg(directory, client)
+    client.upload_package(directory)
