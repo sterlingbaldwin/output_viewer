@@ -62,6 +62,7 @@ class DiagnosticsViewerClient(object):
     def upload_files(self, dataset, files):
         files_remaining = list(files)
         s = requests.Session()
+        ds_id = None
         while len(files_remaining) > 0:
             total_size = 0
             files_to_send = {}
@@ -78,6 +79,8 @@ class DiagnosticsViewerClient(object):
             resp = s.send(prepped, verify=self.cert)
             if resp.status_code != 200:
                 raise ValueError("Failed to upload files: %s" % resp.content)
+            if ds_id is None:
+                ds_id = resp.json().get("dataset", None)
             for f in files_to_send:
                 files_to_send[f].close()
             time.sleep(.01)
