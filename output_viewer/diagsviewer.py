@@ -56,8 +56,9 @@ class DiagnosticsViewerClient(object):
                 files.append(spec["icon"])
 
         files = [os.path.join(file_root, filename) for filename in files]
-        self.upload_files(version, files)
+        ds_id = self.upload_files(version, files)
         os.chdir(cwd_cache)
+        return ds_id
 
     def upload_files(self, dataset, files):
         files_remaining = list(files)
@@ -84,3 +85,4 @@ class DiagnosticsViewerClient(object):
             for f in files_to_send:
                 files_to_send[f].close()
             time.sleep(.01)
+        return ds_id
