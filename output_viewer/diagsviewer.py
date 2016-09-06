@@ -5,7 +5,7 @@ import os
 import resource
 import hmac
 import hashlib
-
+import json
 
 class DiagnosticsViewerClient(object):
     def __init__(self, server, user_id=None, user_key=None, cert=True):
